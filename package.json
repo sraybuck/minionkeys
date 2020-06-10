@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "integration between keycloak and minion",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sraybuck/minionkeys.git"
+},
   "dependencies": {
     "axios": "^0.19.2",
     "knex": "^0.21.1",
     "mysql": "^2.18.1",
-    "qs": "^6.9.4",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.5"
+    "qs": "^6.9.4"
   },
   "devDependencies": {},
   "scripts": {
