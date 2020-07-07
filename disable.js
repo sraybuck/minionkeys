@@ -7,18 +7,14 @@ const axios = require('axios')
 //load query string lib
 const qs = require('qs');
 
-//get mysql connection info from json file
-configPath = './config.json';
-var config = JSON.parse(fs.readFileSync(configPath, 'UTF-8'));
-
 //load knex module and connection info
 var knex = require('knex')({
   client: 'mysql',
   connection: {
-    host: config.mysql.HOST,
-    user: config.mysql.user,
-    password: config.mysql.pass,
-    database: config.mysql.database
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+    database: process.env.MYSQL_DATABASE
   }
 });
 
@@ -31,18 +27,14 @@ async function getKey() {
     return 'Basic ' + btoa(username + ':' + password)
   }
 
-  //get configuration info
-  configPath = './config.json';
-  var config = JSON.parse(fs.readFileSync(configPath, 'UTF-8'));
-
   //call api for token
   const accessData = await axios({
     method: 'post',
-    url: config.keycloak.accessTokenUri,
+    url: `http://${process.env.KEYCLOAK_HOST}/auth/realms/master/protocol/openid-connect/token`,
     headers: {
       'Accept': 'application/json, application/x-www-form-urlencoded',
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': auth(config.keycloak.clientId, config.keycloak.clientSecret)
+      'Authorization': auth(process.env.KEYCLOAK_CLIENT_ID, process.env.KEYCLOAK_CLIENT_SECRET)
     },
     data: qs.stringify({ grant_type: 'client_credentials' })
   })
