@@ -19,6 +19,7 @@ var knex = require('knex')({
 });
 
 const keycloak_host = process.env.KEYCLOAK_HOST || "localhost:8080"
+const query = process.env.MYSQL_QUERY.split(",") || "email,expiration,users".split(",")
 
 //get auth token
 async function getKey() {
@@ -92,7 +93,7 @@ async function main(){
   //get current date and time
   var datetime = new Date();
   //THIS NEEDS TO BE CHANGED IN PRODUCTION
-  var data = await knex.select('email', 'expiration').from('users')
+  var data = await knex.select(query[0], query[1]).from(query[2])
   .then((rows) => { return rows })
   //get access token
   var access = await getKey();
