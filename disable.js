@@ -18,6 +18,8 @@ var knex = require('knex')({
   }
 });
 
+const keycloak_host = process.env.KEYCLOAK_HOST || "localhost:8080"
+
 //get auth token
 async function getKey() {
   function btoa(s) {
@@ -30,7 +32,7 @@ async function getKey() {
   //call api for token
   const accessData = await axios({
     method: 'post',
-    url: `http://${process.env.KEYCLOAK_HOST}/auth/realms/master/protocol/openid-connect/token`,
+    url: `http://${keycloak_host}/auth/realms/master/protocol/openid-connect/token`,
     headers: {
       'Accept': 'application/json, application/x-www-form-urlencoded',
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -48,7 +50,7 @@ async function disable(email, access) {
   //find user by email
   var rep = await axios({
     method: 'GET',
-    url: "http://localhost:8080/auth/admin/realms/master/users/?email=" + email,
+    url: `http://${keycloak_host}/auth/admin/realms/master/users/?email=${email}`,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -74,7 +76,7 @@ async function disable(email, access) {
       //update user with new data
       const update = await axios({
         method: "PUT",
-        url: "http://localhost:8080/auth/admin/realms/master/users/" + representation.id,
+        url: `http://${keycloak_host}/auth/admin/realms/master/users/${representation.id}`,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -89,7 +91,7 @@ async function disable(email, access) {
 async function main(){
   //get current date and time
   var datetime = new Date();
-  //get all user emails
+  //THIS NEEDS TO BE CHANGED IN PRODUCTION
   var data = await knex.select('email', 'expiration').from('users')
   .then((rows) => { return rows })
   //get access token
